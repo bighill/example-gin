@@ -71,6 +71,12 @@ func GetDynamicUri(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
+	r.Use(SpecialMiddleware())
+
+	r.GET("/", func(c *gin.Context) {
+		specialMessage := c.MustGet("specialVariable").(string)
+		c.JSON(200, gin.H{"message": "root route", "special_mesage": specialMessage})
+	})
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
