@@ -71,6 +71,7 @@ func GetDynamicUri(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 	r.HTMLRender = initRenderer()
 	r.Use(SpecialMiddleware())
 
@@ -105,5 +106,5 @@ func main() {
 		c.HTML(200, "secondary", gin.H{"templateVar": "bar"})
 	})
 
-	r.Run()
+	r.Run(":8080")
 }
