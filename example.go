@@ -71,6 +71,7 @@ func GetDynamicUri(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
+	r.HTMLRender = initRenderer()
 	r.Use(SpecialMiddleware())
 
 	r.GET("/", func(c *gin.Context) {
@@ -96,6 +97,13 @@ func main() {
 	// curl -v localhost:8080/dynamic-uri/lex/brokenuuid
 	// curl localhost:8080/dynamic-uri/lex/987fbc97-4bed-5078-9f07-9141ba07c9f3
 	r.GET("/dynamic-uri/:name/:id", GetDynamicUri)
+
+	r.GET("/html", func(c *gin.Context) {
+		c.HTML(200, "default", gin.H{"templateVar": "foo"})
+	})
+	r.GET("/html2", func(c *gin.Context) {
+		c.HTML(200, "secondary", gin.H{"templateVar": "bar"})
+	})
 
 	r.Run()
 }

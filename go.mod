@@ -2,7 +2,10 @@ module foo-gin
 
 go 1.19
 
-require github.com/gin-gonic/gin v1.8.1
+require (
+	github.com/gin-contrib/multitemplate v0.0.0-20220705015713-e21a0ba39de3
+	github.com/gin-gonic/gin v1.8.1
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
