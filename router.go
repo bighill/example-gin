@@ -40,6 +40,8 @@ func initRouter() *gin.Engine {
 	r.POST("/mongo/authors", MongoCreateAuthor)
 	r.GET("/mongo/authors", MongoGetAllAuthors)
 	r.GET("/mongo/authors/:id", MongoGetAuthor)
+	r.PUT("/mongo/authors/:id", MongoUpdateAuthor)
+	r.DELETE("/mongo/authors/:id", MongoDeleteAuthor)
 
 	return r
 }

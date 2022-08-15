@@ -77,8 +77,7 @@ func GetDynamicUri(c *gin.Context) {
 mongo
 */
 type Author struct {
-	ID   primitive.ObjectID `bson:"_id"`
-	Name string             `json:"name"`
+	Name string `json:"name"`
 }
 
 func MongoCreateAuthor(c *gin.Context) {
@@ -93,8 +92,6 @@ func MongoCreateAuthor(c *gin.Context) {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-
-	author.ID = primitive.NewObjectID()
 
 	res, err := authorCollection.InsertOne(ctx, author)
 	if err != nil {
@@ -144,4 +141,58 @@ func MongoGetAuthor(c *gin.Context) {
 	}
 
 	c.JSON(200, author)
+}
+
+func MongoUpdateAuthor(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	type AuthorUpdate struct {
+		Name string `json:"name"`
+	}
+
+	id := c.Params.ByName("id")
+	authorID, _ := primitive.ObjectIDFromHex(id)
+
+	var author AuthorUpdate
+
+	err := c.BindJSON(&author)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	authorCollection := DB.Database("library").Collection("authors")
+
+	res, err := authorCollection.UpdateOne(
+		ctx,
+		bson.M{"_id": authorID},
+		bson.D{
+			{Key: "$set", Value: bson.D{{Key: "name", Value: author.Name}}},
+		},
+	)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, res)
+}
+
+func MongoDeleteAuthor(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	id := c.Params.ByName("id")
+	authorID, _ := primitive.ObjectIDFromHex(id)
+
+	authorCollection := DB.Database("library").Collection("authors")
+
+	res, err := authorCollection.DeleteOne(ctx, bson.M{"_id": authorID})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, res)
 }
