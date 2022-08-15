@@ -37,5 +37,9 @@ func initRouter() *gin.Engine {
 		c.HTML(200, "secondary", gin.H{"templateVar": "bar"})
 	})
 
+	r.POST("/mongo/authors", MongoCreateAuthor)
+	r.GET("/mongo/authors", MongoGetAllAuthors)
+	r.GET("/mongo/authors/:id", MongoGetAuthor)
+
 	return r
 }
